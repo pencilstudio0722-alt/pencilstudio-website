@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pencil Studio — 用創意描繪遊戲世界</title>
+  <meta name="description" content="Pencil Studio 是一間來自香港的遊戲設計工作室，專注打造高品質的遊戲體驗。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ═══ RESET & BASE ═══ */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Noto Sans TC', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #1a1a2e;
+      background: #ffffff;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+    /* ═══ NAVIGATION ═══ */
+    nav {
+      position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+      transition: box-shadow 0.3s ease;
+    }
+    nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.08); }
+    .nav-inner {
+      max-width: 1200px; margin: 0 auto; padding: 0 24px;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 72px;
+    }
+    .nav-logo { height: 40px; }
+    .nav-links { display: flex; gap: 32px; align-items: center; }
+    .nav-links a {
+      font-size: 15px; font-weight: 500; color: #555;
+      transition: color 0.2s ease;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: -4px; left: 0;
+      width: 0; height: 2px; background: #2563eb;
+      transition: width 0.3s ease;
+    }
+    .nav-links a:hover { color: #2563eb; }
+    .nav-links a:hover::after { width: 100%; }
+    .nav-cta {
+      background: #2563eb !important; color: #fff !important;
+      padding: 10px 24px; border-radius: 8px; font-weight: 600 !important;
+      transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+    }
+    .nav-cta:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(37,99,235,0.4); }
+    .nav-cta::after { display: none !important; }
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 8px; }
+    .hamburger span { width: 24px; height: 2px; background: #1a1a2e; transition: 0.3s; border-radius: 2px; }
+
+    /* ═══ HERO ═══ */
+    .hero {
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      text-align: center; padding: 120px 24px 80px;
+      background: linear-gradient(135deg, #f8faff 0%, #eef2ff 50%, #f0f4ff 100%);
+      position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: ''; position: absolute; top: -50%; right: -30%;
+      width: 800px; height: 800px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(37,99,235,0.06) 0%, transparent 70%);
+    }
+    .hero::after {
+      content: ''; position: absolute; bottom: -40%; left: -20%;
+      width: 600px; height: 600px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(99,102,241,0.05) 0%, transparent 70%);
+    }
+    .hero-content { position: relative; z-index: 1; }
+    .hero-logo {
+      width: 120px; height: 120px; margin: 0 auto 32px;
+      animation: float 6s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+    .hero h1 {
+      font-size: clamp(36px, 6vw, 64px); font-weight: 800;
+      letter-spacing: -1px; margin-bottom: 16px;
+      background: linear-gradient(135deg, #1a1a2e 0%, #2563eb 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero p {
+      font-size: clamp(16px, 2.5vw, 22px); color: #666;
+      max-width: 600px; margin: 0 auto 40px; font-weight: 300;
+    }
+    .hero-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #2563eb; color: #fff; padding: 16px 36px;
+      border-radius: 12px; font-size: 16px; font-weight: 600;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(37,99,235,0.35); }
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #fff; color: #1a1a2e; padding: 16px 36px;
+      border-radius: 12px; font-size: 16px; font-weight: 600;
+      border: 1.5px solid #e0e0e0;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .btn-secondary:hover { transform: translateY(-2px); border-color: #2563eb; }
+
+    /* ═══ SECTION COMMON ═══ */
+    section { padding: 100px 0; }
+    .section-label {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 13px; font-weight: 600; color: #2563eb;
+      text-transform: uppercase; letter-spacing: 2px;
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: clamp(28px, 4vw, 44px); font-weight: 800;
+      letter-spacing: -0.5px; margin-bottom: 16px; color: #1a1a2e;
+    }
+    .section-desc {
+      font-size: 17px; color: #666; max-width: 640px;
+      line-height: 1.8; font-weight: 300;
+    }
+
+    /* ═══ GAME SHOWCASE ═══ */
+    .game-section { background: #fff; }
+    .game-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 64px; align-items: center; margin-top: 64px;
+    }
+    .game-visual {
+      position: relative; border-radius: 20px; overflow: hidden;
+      background: linear-gradient(135deg, #0a0618 0%, #1a1435 100%);
+      aspect-ratio: 4/3; display: flex; align-items: center; justify-content: center;
+    }
+    .game-visual-inner {
+      text-align: center; padding: 40px;
+    }
+    .game-visual .game-icon { font-size: 80px; margin-bottom: 16px; }
+    .game-visual .game-name {
+      font-size: 28px; font-weight: 800; color: #ff3333;
+      text-shadow: 0 0 30px rgba(255,0,0,0.4);
+      letter-spacing: 3px;
+    }
+    .game-visual .game-engine {
+      font-size: 13px; color: #888; margin-top: 8px;
+    }
+    .game-info h3 {
+      font-size: 24px; font-weight: 700; margin-bottom: 20px; color: #1a1a2e;
+    }
+    .game-features { list-style: none; margin-top: 24px; }
+    .game-features li {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 12px 0; font-size: 15px; color: #444;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .game-features li:last-child { border-bottom: none; }
+    .game-features .feat-icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+    .game-features .feat-text strong { color: #1a1a2e; }
+
+    /* ═══ STATS ═══ */
+    .stats-section {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      color: #fff; padding: 80px 0;
+    }
+    .stats-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px;
+      text-align: center;
+    }
+    .stat-item .stat-number {
+      font-size: 48px; font-weight: 800;
+      background: linear-gradient(135deg, #60a5fa, #a78bfa);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .stat-item .stat-label {
+      font-size: 14px; color: #8899aa; margin-top: 8px; font-weight: 500;
+    }
+
+    /* ═══ CHARACTERS ═══ */
+    .characters-section { background: #f8faff; }
+    .char-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 20px; margin-top: 48px;
+    }
+    .char-card {
+      background: #fff; border-radius: 16px; padding: 24px 16px;
+      text-align: center; border: 1px solid #eee;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .char-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.08); }
+    .char-icon { font-size: 40px; margin-bottom: 8px; }
+    .char-name { font-size: 15px; font-weight: 700; color: #1a1a2e; }
+    .char-class { font-size: 12px; color: #888; margin-top: 4px; }
+    .char-rarity {
+      display: inline-block; font-size: 11px; font-weight: 700;
+      padding: 2px 10px; border-radius: 20px; margin-top: 8px;
+    }
+    .rar-N { background: #f0f0f0; color: #666; }
+    .rar-R { background: #e8f0fe; color: #2563eb; }
+    .rar-SR { background: #f3e8ff; color: #7c3aed; }
+    .rar-SSR { background: #fef3c7; color: #d97706; }
+
+    /* ═══ ABOUT ═══ */
+    .about-section { background: #fff; }
+    .about-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 64px; align-items: center; margin-top: 64px;
+    }
+    .about-values { margin-top: 32px; }
+    .value-item {
+      display: flex; gap: 16px; padding: 20px 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .value-item:last-child { border-bottom: none; }
+    .value-icon {
+      width: 48px; height: 48px; border-radius: 12px;
+      background: #eef2ff; display: flex; align-items: center; justify-content: center;
+      font-size: 22px; flex-shrink: 0;
+    }
+    .value-title { font-size: 16px; font-weight: 700; color: #1a1a2e; margin-bottom: 4px; }
+    .value-desc { font-size: 14px; color: #666; line-height: 1.6; }
+    .about-visual {
+      background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
+      border-radius: 24px; padding: 48px; display: flex;
+      align-items: center; justify-content: center;
+      aspect-ratio: 1;
+    }
+    .about-visual .big-logo { width: 200px; opacity: 0.9; }
+
+    /* ═══ STORY CHAPTERS ═══ */
+    .story-section { background: #f8faff; }
+    .story-scroll {
+      display: flex; gap: 20px; overflow-x: auto;
+      padding: 48px 0 24px; scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+    }
+    .story-scroll::-webkit-scrollbar { height: 6px; }
+    .story-scroll::-webkit-scrollbar-track { background: #eee; border-radius: 3px; }
+    .story-scroll::-webkit-scrollbar-thumb { background: #bbb; border-radius: 3px; }
+    .story-card {
+      flex: 0 0 280px; scroll-snap-align: start;
+      background: #fff; border-radius: 16px; padding: 28px;
+      border: 1px solid #eee; transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .story-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.08); }
+    .story-card .ch-num {
+      font-size: 12px; font-weight: 700; color: #2563eb;
+      text-transform: uppercase; letter-spacing: 1px;
+    }
+    .story-card .ch-icon { font-size: 36px; margin: 12px 0; }
+    .story-card .ch-title {
+      font-size: 17px; font-weight: 700; color: #1a1a2e; margin-bottom: 8px;
+    }
+    .story-card .ch-desc { font-size: 13px; color: #888; line-height: 1.6; }
+    .story-hint {
+      text-align: center; margin-top: 16px;
+      font-size: 13px; color: #aaa;
+    }
+
+    /* ═══ CONTACT ═══ */
+    .contact-section {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      color: #fff; text-align: center;
+    }
+    .contact-section .section-label { color: #60a5fa; }
+    .contact-section .section-title { color: #fff; }
+    .contact-section .section-desc { color: #8899aa; margin: 0 auto 48px; }
+    .contact-links { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .contact-link {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
+      padding: 16px 28px; border-radius: 12px;
+      font-size: 15px; font-weight: 500; color: #ccd;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .contact-link:hover { background: rgba(255,255,255,0.14); transform: translateY(-2px); }
+    .contact-link .cl-icon { font-size: 20px; }
+
+    /* ═══ FOOTER ═══ */
+    footer {
+      background: #0d0b1a; color: #666; text-align: center;
+      padding: 32px 24px; font-size: 13px;
+    }
+    footer .footer-logo { height: 28px; margin: 0 auto 12px; opacity: 0.5; }
+
+    /* ═══ FADE IN ═══ */
+    .fade-up {
+      opacity: 0; transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    /* ═══ RESPONSIVE ═══ */
+    @media (max-width: 900px) {
+      .game-grid, .about-grid { grid-template-columns: 1fr; gap: 40px; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .char-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+    }
+    @media (max-width: 640px) {
+      .nav-links { display: none; }
+      .nav-links.open {
+        display: flex; flex-direction: column;
+        position: absolute; top: 72px; left: 0; width: 100%;
+        background: rgba(255,255,255,0.98); padding: 24px; gap: 20px;
+        border-bottom: 1px solid #eee;
+      }
+      .hamburger { display: flex; }
+      .hero { min-height: 90vh; padding: 100px 20px 60px; }
+      .hero-logo { width: 80px; height: 80px; }
+      section { padding: 64px 0; }
+      .stat-item .stat-number { font-size: 36px; }
+      .about-visual { padding: 32px; }
+      .about-visual .big-logo { width: 140px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══ NAVIGATION ═══ -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="#hero"><img src="logo.png" alt="Pencil Studio" class="nav-logo"></a>
+    <div class="nav-links" id="navLinks">
+      <a href="#game">遊戲</a>
+      <a href="#about">關於我們</a>
+      <a href="#story">故事</a>
+      <a href="#contact">聯絡</a>
+      <a href="#game" class="nav-cta">立即遊玩</a>
+    </div>
+    <div class="hamburger" id="hamburger" onclick="document.getElementById('navLinks').classList.toggle('open')">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero" id="hero">
+  <div class="hero-content fade-up">
+    <img src="logo.png" alt="Pencil Studio" class="hero-logo">
+    <h1>用創意描繪遊戲世界</h1>
+    <p>Pencil Studio 是一間來自香港的遊戲設計工作室。我們用熱情與匠心，打造讓人沉浸其中的遊戲體驗。</p>
+    <div class="hero-buttons">
+      <a href="#game" class="btn-primary">🎮 探索我們的遊戲</a>
+      <a href="#about" class="btn-secondary">認識團隊</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ GAME SHOWCASE ═══ -->
+<section class="game-section" id="game">
+  <div class="container">
+    <div class="fade-up">
+      <div class="section-label">🎮 代表作品</div>
+      <h2 class="section-title">暗黑戰棋</h2>
+      <p class="section-desc">一款從地獄打到天界的暗黑風 3D 戰棋 RPG。30 章史詩劇情、20+ 角色陣容、回合制策略對戰，網頁即開即玩。</p>
+    </div>
+    <div class="game-grid fade-up">
+      <div class="game-visual">
+        <div class="game-visual-inner">
+          <div class="game-icon">⚔️</div>
+          <div class="game-name">暗黑戰棋</div>
+          <div class="game-engine">Powered by Babylon.js</div>
+        </div>
+      </div>
+      <div class="game-info">
+        <h3>回合制戰棋 RPG</h3>
+        <ul class="game-features">
+          <li>
+            <span class="feat-icon">📖</span>
+            <span class="feat-text"><strong>30 章史詩劇情</strong> — 從人間村莊到地獄深淵，再到天界王座，揭開創世天帝的最終真相</span>
+          </li>
+          <li>
+            <span class="feat-icon">👥</span>
+            <span class="feat-text"><strong>20+ 角色職業</strong> — 戰士、法師、刺客、龍騎士、大天使……四個稀有度，每種獨特技能組</span>
+          </li>
+          <li>
+            <span class="feat-icon">🎲</span>
+            <span class="feat-text"><strong>抽卡 & 養成</strong> — Gacha 系統收集角色，裝備強化、符文搭配、難度塔挑戰</span>
+          </li>
+          <li>
+            <span class="feat-icon">☁️</span>
+            <span class="feat-text"><strong>雲端存檔</strong> — Firebase 整合，跨裝置同步進度，隨時隨地繼續冒險</span>
+          </li>
+          <li>
+            <span class="feat-icon">📱</span>
+            <span class="feat-text"><strong>跨平台</strong> — 網頁版與手機版同步支援，一鍵即玩</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ STATS ═══ -->
+<section class="stats-section">
+  <div class="container">
+    <div class="stats-grid fade-up">
+      <div class="stat-item">
+        <div class="stat-number">30</div>
+        <div class="stat-label">故事章節</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">20+</div>
+        <div class="stat-label">角色職業</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">15+</div>
+        <div class="stat-label">BOSS 戰役</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">3D</div>
+        <div class="stat-label">戰棋場景</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CHARACTERS ═══ -->
+<section class="characters-section">
+  <div class="container">
+    <div class="fade-up" style="text-align:center;">
+      <div class="section-label">👥 角色陣容</div>
+      <h2 class="section-title">收集你的戰鬥小隊</h2>
+      <p class="section-desc" style="margin:0 auto;">從基礎戰士到傳說級 SSR 角色，每個英雄都有獨特的技能與被動天賦。</p>
+    </div>
+    <div class="char-grid fade-up">
+      <div class="char-card">
+        <div class="char-icon">⚔️</div>
+        <div class="char-name">戰士</div>
+        <div class="char-class">近戰輸出</div>
+        <span class="char-rarity rar-N">N</span>
+      </div>
+      <div class="char-card">
+        <div class="char-icon">🏹</div>
+        <div class="char-name">弓箭手</div>
+        <div class="char-class">遠程輸出</div>
+        <span class="char-rarity rar-N">N</span>
+      </div>
+      <div class="char-card">
+        <div class="char-icon">🔮</div>
+        <div class="char-name">法師</div>
+        <div class="char-class">魔法 AOE</div>
+        <span class="char-rarity rar-N">N</span>
+      </div>
+      <div class="char-card">
+        <div class="char-icon">🛡️</div>
+        <div class="char-name">騎士</div>
+        <div class="char-class">坦克防禦</div>
+        <span class="char-rarity rar-R">R</span>
+      </div>
+      <div class="char-card">
+        <div class="char-icon">🗡️</div>
+        <div class="char-name">刺客</div>
+        <div class="char-class">暴擊暗殺</div>
+        <span class="char-rarity rar-R">R</span>
+      </div>
+      <div class="char-card">
+        <div class="char-icon">✝️</div>
+        <div class="char-name">牧師</div>
+        <div class="char-class">治療輔助</div>
+        <span class="char-rarity rar-R">R</span>
+      </div>
+      <div class="char-card">
+        <div class="char-icon">🐉</div>
+        <div class="char-name">龍騎士</div>
+        <div class="char-class">龍炎 AOE</div>
+        <span class="char-rarity rar-SR">SR</span>
+      </div>
+      <div class="char-card">
+        <div class="char-icon">🥷</div>
+        <div class="char-name">忍者</div>
+        <div class="char-class">高速暗殺</div>
+        <span class="char-rarity rar-SR">SR</span>
+      </div>
+      <div class="char-card">
+        <div class="char-icon">💀</div>
+        <div class="char-name">死亡騎士</div>
+        <div class="char-class">不死復活</div>
+        <span class="char-rarity rar-SSR">SSR</span>
+      </div>
+      <div class="char-card">
+        <div class="char-icon">😈</div>
+        <div class="char-name">魔君</div>
+        <div class="char-class">擊殺連動</div>
+        <span class="char-rarity rar-SSR">SSR</span>
+      </div>
+      <div class="char-card">
+        <div class="char-icon">👼</div>
+        <div class="char-name">大天使</div>
+        <div class="char-class">光環減傷</div>
+        <span class="char-rarity rar-SSR">SSR</span>
+      </div>
+      <div class="char-card">
+        <div class="char-icon">⚡</div>
+        <div class="char-name">雷神</div>
+        <div class="char-class">連鎖閃電</div>
+        <span class="char-rarity rar-SSR">SSR</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ STORY ═══ -->
+<section class="story-section" id="story">
+  <div class="container">
+    <div class="fade-up">
+      <div class="section-label">📖 史詩劇情</div>
+      <h2 class="section-title">三大篇章，從人間到天界</h2>
+      <p class="section-desc">30 章故事跨越三大世界，揭開從遠古封印到創世天帝的最終真相。</p>
+    </div>
+    <div class="story-scroll fade-up">
+      <div class="story-card">
+        <div class="ch-num">第一篇 · 暗黑篇</div>
+        <div class="ch-icon">⚔️</div>
+        <div class="ch-title">黑暗初現</div>
+        <div class="ch-desc">從村莊的史萊姆異變開始，深入墓穴、惡魔巢穴、龍巢……一步步揭開幕後黑手的真面目，最終對決暗黑龍王。</div>
+      </div>
+      <div class="story-card">
+        <div class="ch-num">第二篇 · 煉獄篇</div>
+        <div class="ch-icon">🔥</div>
+        <div class="ch-title">躍入地獄</div>
+        <div class="ch-desc">龍王倒下，裂縫失控。四位勇者縱身躍入地獄，經歷熔岩深淵、虛空裂隙、冥界之門，面對毀滅世界的「虛無之主」。</div>
+      </div>
+      <div class="story-card">
+        <div class="ch-num">第三篇 · 天界篇</div>
+        <div class="ch-icon">🌟</div>
+        <div class="ch-title">天使的國度</div>
+        <div class="ch-desc">地獄裂縫關閉，天界之橋顯現。闖入天使國度，經歷試煉、競技場、黎明之塔，最終揭開創世天帝要毀滅一切的真相。</div>
+      </div>
+      <div class="story-card">
+        <div class="ch-num">最終章</div>
+        <div class="ch-icon">👑</div>
+        <div class="ch-title">天之巔</div>
+        <div class="ch-desc">天帝降臨。祂創造了世界，現在厭倦了。最終決戰——凡人對抗造物主，為存在的意義而戰。</div>
+      </div>
+    </div>
+    <div class="story-hint fade-up">← 左右滑動查看更多 →</div>
+  </div>
+</section>
+
+<!-- ═══ ABOUT ═══ -->
+<section class="about-section" id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="fade-up">
+        <div class="section-label">✏️ 關於我們</div>
+        <h2 class="section-title">Pencil Studio</h2>
+        <p class="section-desc">我們是一間來自香港的遊戲設計工作室。一枝鉛筆，一個念頭，從草圖開始，用創意與熱情打造讓人沉浸的遊戲世界。</p>
+        <div class="about-values">
+          <div class="value-item">
+            <div class="value-icon">🎯</div>
+            <div>
+              <div class="value-title">專注遊戲設計</div>
+              <div class="value-desc">從概念到成品，每一步都親手打磨。我們相信好遊戲始於好故事、好機制、好細節。</div>
+            </div>
+          </div>
+          <div class="value-item">
+            <div class="value-icon">🌍</div>
+            <div>
+              <div class="value-title">跨平台體驗</div>
+              <div class="value-desc">網頁、手機、平板——我們的遊戲無處不在，讓玩家隨時隨地享受樂趣。</div>
+            </div>
+          </div>
+          <div class="value-item">
+            <div class="value-icon">💡</div>
+            <div>
+              <div class="value-title">持續創新</div>
+              <div class="value-desc">不斷嘗試新的玩法、技術與美術風格，讓每一款作品都有驚喜。</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="about-visual fade-up">
+        <img src="logo.png" alt="Pencil Studio" class="big-logo">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CONTACT ═══ -->
+<section class="contact-section" id="contact">
+  <div class="container">
+    <div class="fade-up">
+      <div class="section-label">📬 聯絡我們</div>
+      <h2 class="section-title">一起創造好遊戲</h2>
+      <p class="section-desc">無論是合作洽談、遊戲反饋，還是想加入團隊，都歡迎聯絡我們。</p>
+    </div>
+    <div class="contact-links fade-up">
+      <a href="mailto:pencilstudio0722@gmail.com" class="contact-link">
+        <span class="cl-icon">✉️</span>
+        pencilstudio0722@gmail.com
+      </a>
+      <a href="#" class="contact-link">
+        <span class="cl-icon">🐦</span>
+        @PencilStudio
+      </a>
+      <a href="#" class="contact-link">
+        <span class="cl-icon">💬</span>
+        Discord
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <img src="logo.png" alt="Pencil Studio" class="footer-logo">
+  <p>© 2026 Pencil Studio. All rights reserved. 用創意描繪遊戲世界。</p>
+</footer>
+
+<!-- ═══ SCRIPTS ═══ -->
+<script>
+  // Navbar scroll effect
+  const nav = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 20);
+  });
+
+  // Fade-in on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+  // Smooth scroll for nav links
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        document.getElementById('navLinks').classList.remove('open');
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
